@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.river.im.mapper.FriendRequestsFeedbackMapper">
+
+    <resultMap id="BaseResultMap" type="cn.river.im.entity.FriendRequestsFeedback">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="toId" column="to_id" jdbcType="BIGINT"/>
+            <result property="fromId" column="from_id" jdbcType="BIGINT"/>
+            <result property="creationTime" column="creation_time" jdbcType="TIMESTAMP"/>
+            <result property="isAgree" column="is_agree" jdbcType="TINYINT"/>
+            <result property="feedbackMsg" column="feedback_msg" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,to_id,from_id,
+        creation_time,is_agree,feedback_msg
+    </sql>
+</mapper>
