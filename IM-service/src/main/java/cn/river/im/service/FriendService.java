@@ -1,7 +1,10 @@
 package cn.river.im.service;
 
 import cn.river.im.entity.Friend;
+import cn.river.im.vo.ContactVo;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
 * @author 阳名
@@ -10,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface FriendService extends IService<Friend> {
     boolean checkWhetherItIsAFriend(String userId,String friendId);
+    List<ContactVo> getFriendList(String uid);
 }

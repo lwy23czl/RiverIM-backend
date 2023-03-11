@@ -1,13 +1,20 @@
 package cn.river.im.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import cn.river.im.entity.Friend;
+import cn.river.im.entity.User;
 import cn.river.im.mapper.FriendMapper;
 import cn.river.im.service.FriendService;
+import cn.river.im.service.UserService;
+import cn.river.im.vo.ContactVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
 * @author 阳名
@@ -21,6 +28,7 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend>
 
 
     private final FriendMapper friendMapper;
+    private final UserService userService;
 
     @Override
     public boolean checkWhetherItIsAFriend(String userId, String friendId) {
@@ -33,6 +41,40 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend>
             return true;
         }
 
+    }
+
+    @Override
+    public List<ContactVo> getFriendList(String uid) {
+        LambdaQueryWrapper<Friend> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Friend::getUserId,uid).or().eq(Friend::getFriendId,uid).select(Friend::getUserId,Friend::getFriendId,Friend::getRemarks);
+        List<Friend> friendList = friendMapper.selectList(wrapper);
+        List<ContactVo> vos =new ArrayList<>();
+        for (Friend friend : friendList) {
+            ContactVo vo = new ContactVo();
+            if(friend.getFriendId().equals(uid)){
+                User userData = userService.getById(friend.getUserId());
+                vo.setHeadPortrait(userData.getHeadPortrait());
+                vo.setId(friend.getFriendId());
+                if(StrUtil.isEmpty(friend.getRemarks())){
+                    vo.setNickName(userData.getNickName());
+                }else {
+                    vo.setNickName(friend.getRemarks());
+                }
+            }else {
+                User userData = userService.getById(friend.getFriendId());
+                vo.setHeadPortrait(userData.getHeadPortrait());
+                vo.setId(friend.getFriendId());
+                if(StrUtil.isEmpty(friend.getRemarks())){
+                    vo.setNickName(userData.getNickName());
+                }else {
+                    vo.setNickName(friend.getRemarks());
+                }
+            }
+            vos.add(vo);
+
+
+        }
+        return vos;
     }
 }
 
