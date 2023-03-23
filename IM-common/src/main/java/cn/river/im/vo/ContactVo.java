@@ -7,4 +7,5 @@ public class ContactVo {
     private String id;
     private String nickName;
     private String headPortrait;
+    private String status;
 }

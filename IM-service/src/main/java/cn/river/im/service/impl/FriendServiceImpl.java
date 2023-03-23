@@ -30,6 +30,12 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend>
     private final FriendMapper friendMapper;
     private final UserService userService;
 
+    /**
+     * 判断对方是否已是自己好友
+     * @param userId
+     * @param friendId
+     * @return
+     */
     @Override
     public boolean checkWhetherItIsAFriend(String userId, String friendId) {
         LambdaQueryWrapper<Friend> wrapper = new LambdaQueryWrapper<>();
@@ -54,7 +60,7 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend>
             if(friend.getFriendId().equals(uid)){
                 User userData = userService.getById(friend.getUserId());
                 vo.setHeadPortrait(userData.getHeadPortrait());
-                vo.setId(friend.getFriendId());
+                vo.setId(friend.getUserId());
                 if(StrUtil.isEmpty(friend.getRemarks())){
                     vo.setNickName(userData.getNickName());
                 }else {
@@ -70,6 +76,8 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend>
                     vo.setNickName(friend.getRemarks());
                 }
             }
+            //设置假的在线信息，需要从redis中取在线人数再进行比对
+            vo.setStatus("在线");
             vos.add(vo);
 
 

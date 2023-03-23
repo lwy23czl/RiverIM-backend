@@ -16,6 +16,12 @@ import org.springframework.stereotype.Service;
 public class FriendRequestServiceImpl extends ServiceImpl<FriendRequestMapper, FriendRequest>
     implements FriendRequestService{
 
+    /**
+     * 检查是否发送过好友请求，还未被处理
+     * @param toId
+     * @param fromId
+     * @return
+     */
     @Override
     public boolean checkForPresence(String toId, String fromId) {
         LambdaQueryWrapper<FriendRequest> wrapper = new LambdaQueryWrapper<>();
