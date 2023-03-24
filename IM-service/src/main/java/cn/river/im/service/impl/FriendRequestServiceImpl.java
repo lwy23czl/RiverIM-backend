@@ -23,14 +23,14 @@ public class FriendRequestServiceImpl extends ServiceImpl<FriendRequestMapper, F
      * @return
      */
     @Override
-    public boolean checkForPresence(String toId, String fromId) {
+    public boolean checkForPresence(String fromId, String toId) {
         LambdaQueryWrapper<FriendRequest> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(FriendRequest::getFromId,fromId).eq(FriendRequest::getToId,toId);
         Long aLong = this.baseMapper.selectCount(wrapper);
         if(aLong>0){
-            return false;
-        }else {
             return true;
+        }else {
+            return false;
         }
     }
 }

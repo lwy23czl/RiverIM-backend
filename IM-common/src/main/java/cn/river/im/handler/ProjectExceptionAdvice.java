@@ -1,6 +1,7 @@
 package cn.river.im.handler;
 
 import cn.river.im.enums.ApiCode;
+import cn.river.im.exception.BusinessException;
 import cn.river.im.exception.SystemException;
 import cn.river.im.result.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,14 @@ public class ProjectExceptionAdvice {
     @ResponseStatus(HttpStatus.OK)
     public Result<Boolean> httpRequestMethodNotSupportedExceptionHandler(Exception exception) {
         return Result.fail(ApiCode.HTTP_REQUEST_METHOD_NOT_SUPPORTED_EXCEPTION.getCode(), exception.getMessage());
+    }
+    /**
+     * 自定义异常
+     */
+    @ExceptionHandler(value = {BusinessException.class})
+    @ResponseStatus(HttpStatus.OK)
+    public Result<Boolean> BException(BusinessException e){
+        return new Result<Boolean>(e.getCode(),false,e.getMessage());
     }
 
     /**

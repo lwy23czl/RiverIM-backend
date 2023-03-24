@@ -15,13 +15,11 @@ import cn.river.im.result.Result;
 import cn.river.im.service.FriendRequestService;
 import cn.river.im.service.FriendRequestsFeedbackService;
 import cn.river.im.service.FriendService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
@@ -82,6 +80,18 @@ public class FriendRequestController {
             }
         }
         return Result.ok();
+    }
+
+    /**
+     * 获取未处理好友请求数量
+     */
+    @GetMapping("/applyCount")
+    @AuthCheck
+    public Result<Long> getUnApplyCount(){
+        LambdaQueryWrapper<FriendRequest> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(FriendRequest::getToId,LocalUser.getUser().getId());
+        Long count = friendRequestService.getBaseMapper().selectCount(wrapper);
+        return Result.ok(count);
     }
 
 

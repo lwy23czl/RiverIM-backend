@@ -23,12 +23,12 @@ public class FriendRequest implements Serializable {
     private String id;
 
     /**
-     * 请求方id
+     * 接收方id
      */
     private String toId;
 
     /**
-     * 接收方id
+     * 请求方id
      */
     private String fromId;
 

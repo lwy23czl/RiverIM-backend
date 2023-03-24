@@ -66,5 +66,6 @@ public class WebSocketApplyService {
      */
     private void sendMsg(String toId,String type) throws IOException {
         webSocketApplyMap.get(toId).SocketSession.getBasicRemote().sendText(type);
+        log.info("apply信息已发送");
     }
 }
