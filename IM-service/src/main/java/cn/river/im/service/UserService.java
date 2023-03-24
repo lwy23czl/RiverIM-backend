@@ -4,6 +4,7 @@ import cn.river.im.dto.LoginDto;
 import cn.river.im.dto.RegisterDto;
 import cn.river.im.entity.User;
 import cn.river.im.result.Result;
+import cn.river.im.vo.BasicUserInfoVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -19,4 +20,6 @@ public interface UserService extends IService<User> {
     Result<String> getVerificationCode(String accountNumber);
 
     String getHeadPortrait(String uid);
+
+
 }

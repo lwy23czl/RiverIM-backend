@@ -1,7 +1,11 @@
 package cn.river.im.service;
 
 import cn.river.im.entity.FriendRequest;
+import cn.river.im.entity.User;
+import cn.river.im.vo.FriendRequestVo;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
 * @author 阳名
@@ -10,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface FriendRequestService extends IService<FriendRequest> {
     boolean checkForPresence(String toId,String fromId);
+    List<FriendRequestVo> getFRList(User user);
 }

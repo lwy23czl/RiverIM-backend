@@ -1,7 +1,10 @@
 package cn.river.im.service;
 
 import cn.river.im.entity.FriendRequestsFeedback;
+import cn.river.im.vo.FRFeedbackVo;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
 * @author 阳名
@@ -9,5 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2022-11-07 16:49:03
 */
 public interface FriendRequestsFeedbackService extends IService<FriendRequestsFeedback> {
-
+    List<FRFeedbackVo> getFeedbackList(String uid);
 }

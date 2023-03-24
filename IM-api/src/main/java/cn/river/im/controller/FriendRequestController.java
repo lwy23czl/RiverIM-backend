@@ -8,6 +8,7 @@ import cn.river.im.dto.FeedbackDto;
 import cn.river.im.entity.Friend;
 import cn.river.im.entity.FriendRequest;
 import cn.river.im.entity.FriendRequestsFeedback;
+import cn.river.im.entity.User;
 import cn.river.im.enums.ApiCode;
 import cn.river.im.exception.BusinessException;
 import cn.river.im.local.LocalUser;
@@ -15,11 +16,15 @@ import cn.river.im.result.Result;
 import cn.river.im.service.FriendRequestService;
 import cn.river.im.service.FriendRequestsFeedbackService;
 import cn.river.im.service.FriendService;
+import cn.river.im.vo.FRFeedbackVo;
+import cn.river.im.vo.FriendRequestVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -40,13 +45,24 @@ public class FriendRequestController {
     public Result<Boolean> addRequest(@RequestBody FriendRequest friendRequest){
         friendRequest.setCreationTime(DateUtil.date());
         friendRequest.setFromId(LocalUser.getUser().getId());
-
+        if(friendService.checkWhetherItIsAFriend(friendRequest.getFromId(), friendRequest.getToId())){
+            throw new BusinessException(ApiCode.FAIL.getCode(), "该用户已是您的好友");
+        }
         if(friendRequestService.checkForPresence(friendRequest.getFromId(), friendRequest.getToId())){
             throw new BusinessException(ApiCode.FAIL.getCode(), "对方还未处理您的请求，请勿重复发送");
         }else {
             friendRequestService.save(friendRequest);
         }
         return Result.ok();
+    }
+    /**
+     * 获取反馈信息列表
+     */
+    @GetMapping("/feedbackList")
+    @AuthCheck
+    public Result<List<FRFeedbackVo>> getFeedbackList(){
+        User user = LocalUser.getUser();
+        return Result.ok(feedbackService.getFeedbackList(user.getId()));
     }
 
 
@@ -57,7 +73,7 @@ public class FriendRequestController {
      */
     @PostMapping("/feedback")
     @AuthCheck
-    public Result<Boolean> addFeedback(@RequestBody FeedbackDto dto){
+    public Result<Boolean> giveFeedback(@RequestBody FeedbackDto dto){
         String uid = LocalUser.getUser().getId();
         dto.setCreationTime(DateUtil.date());
         FriendRequestsFeedback feedback = new FriendRequestsFeedback();
@@ -93,6 +109,18 @@ public class FriendRequestController {
         Long count = friendRequestService.getBaseMapper().selectCount(wrapper);
         return Result.ok(count);
     }
+
+    /**
+     * 获取好友请求列表
+     */
+    @GetMapping("/list")
+    @AuthCheck
+    public Result<List<FriendRequestVo>> getList(){
+        User user = LocalUser.getUser();
+        return Result.ok(friendRequestService.getFRList(user));
+    }
+
+
 
 
 

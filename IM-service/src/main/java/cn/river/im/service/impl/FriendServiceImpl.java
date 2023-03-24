@@ -42,9 +42,9 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend>
         wrapper.eq(Friend::getFriendId,friendId).eq(Friend::getUserId,userId);
         Long aLong = friendMapper.selectCount(wrapper);
         if(aLong>0){
-            return false;
-        }else {
             return true;
+        }else {
+            return false;
         }
 
     }
