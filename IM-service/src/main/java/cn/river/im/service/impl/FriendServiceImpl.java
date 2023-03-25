@@ -61,20 +61,24 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend>
                 User userData = userService.getById(friend.getUserId());
                 vo.setHeadPortrait(userData.getHeadPortrait());
                 vo.setId(friend.getUserId());
-                if(StrUtil.isEmpty(friend.getRemarks())){
-                    vo.setNickName(userData.getNickName());
+
+                /*if(StrUtil.isEmpty(friend.getRemarks())){
+
                 }else {
                     vo.setNickName(friend.getRemarks());
-                }
+                }*/
+                //暂时取消备注模块
+                vo.setNickName(userData.getNickName());
             }else {
                 User userData = userService.getById(friend.getFriendId());
                 vo.setHeadPortrait(userData.getHeadPortrait());
                 vo.setId(friend.getFriendId());
-                if(StrUtil.isEmpty(friend.getRemarks())){
-                    vo.setNickName(userData.getNickName());
+                vo.setNickName(userData.getNickName());
+                /*if(StrUtil.isEmpty(friend.getRemarks())){
+
                 }else {
                     vo.setNickName(friend.getRemarks());
-                }
+                }*/
             }
             //设置假的在线信息，需要从redis中取在线人数再进行比对
             vo.setStatus("在线");

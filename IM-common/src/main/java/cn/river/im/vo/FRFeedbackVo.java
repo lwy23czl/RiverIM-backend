@@ -2,6 +2,9 @@ package cn.river.im.vo;
 
 import lombok.Data;
 
+/**
+ * 好友请求反馈Vo
+ */
 @Data
 public class FRFeedbackVo {
     //对方头像

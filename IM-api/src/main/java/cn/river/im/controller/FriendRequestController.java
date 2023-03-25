@@ -82,11 +82,12 @@ public class FriendRequestController {
         feedbackService.save(feedback);
 
         //判断请求是否通过
-        if(ObjectUtil.equal("0",dto.getIsAgree())){
+        if(0==dto.getIsAgree()){
             //向好友表插入一条记录
             Friend friend = new Friend();
             friend.setUserId(uid);
             friend.setFriendId(dto.getToId());
+            //暂时取消备注模块
             friend.setRemarks(dto.getRemarks());
             friend.setCreationTime(DateUtil.date());
             if(friendService.checkWhetherItIsAFriend(friend.getUserId(), friend.getFriendId())){
@@ -95,6 +96,11 @@ public class FriendRequestController {
                 friendService.save(friend);
             }
         }
+        //无论同意还是拒绝都删除friendRequest表数据
+        LambdaQueryWrapper<FriendRequest> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(FriendRequest::getToId,uid).eq(FriendRequest::getFromId,dto.getToId());
+        friendRequestService.remove(wrapper);
+
         return Result.ok();
     }
 
