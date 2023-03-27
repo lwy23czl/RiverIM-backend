@@ -21,5 +21,6 @@ public interface UserService extends IService<User> {
 
     String getHeadPortrait(String uid);
 
+    boolean logout(String uid);
 
 }

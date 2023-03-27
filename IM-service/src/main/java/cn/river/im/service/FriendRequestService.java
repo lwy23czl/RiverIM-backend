@@ -14,5 +14,5 @@ import java.util.List;
 */
 public interface FriendRequestService extends IService<FriendRequest> {
     boolean checkForPresence(String toId,String fromId);
-    List<FriendRequestVo> getFRList(User user);
+    List<FriendRequestVo> getFRList(String uid);
 }

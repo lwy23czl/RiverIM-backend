@@ -1,8 +1,10 @@
 package cn.river.im.controller;
 
+import cn.river.im.annotation.AuthCheck;
 import cn.river.im.dto.LoginDto;
 import cn.river.im.dto.RegisterDto;
 import cn.river.im.enums.ApiCode;
+import cn.river.im.local.LocalUser;
 import cn.river.im.result.Result;
 import cn.river.im.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -44,5 +46,16 @@ public class LoginController {
     @GetMapping("/code")
     public Result<String> getVerificationCode(@RequestParam("accountNumber") String accountNumber){
         return userService.getVerificationCode(accountNumber);
+    }
+
+    /**
+     * 退出登录
+     */
+    @GetMapping("/logout")
+    @AuthCheck
+    public Result<String> logout(){
+        String id = LocalUser.getUser().getId();
+        userService.logout(id);
+        return Result.ok("退出成功");
     }
 }

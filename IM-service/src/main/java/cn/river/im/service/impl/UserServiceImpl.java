@@ -61,8 +61,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         String md5Hex = DigestUtil.md5Hex(loginDto.getPassWord());
         //查询数据库
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(User::getAccountNumber,loginDto.getAccountNumber())
-                .eq(User::getPassWord,md5Hex);
+        wrapper.eq(User::getAccountNumber,loginDto.getAccountNumber()).eq(User::getPassWord,md5Hex);
         User user = userMapper.selectOne(wrapper);
         if(ObjectUtil.isEmpty(user)){
             return Result.fail(ApiCode.LOGIN_EXCEPTION.getCode(),"账号或密码错误");
@@ -199,6 +198,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             return "";
         }
         return user.getHeadPortrait();
+    }
+
+    @Override
+    public boolean logout(String uid) {
+        //根据uid删除redis
+        redisUtils.likeDel(IMConstants.IM_REDIS_ONLINE_TOKEN + uid);
+        return true;
     }
 
 

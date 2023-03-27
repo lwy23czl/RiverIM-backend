@@ -12,4 +12,5 @@ public class ChatCardVo {
     private String lastContent;
     private String imgUrl;
     private String objectName;
+    private int chatNumItem;
 }

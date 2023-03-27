@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -40,8 +41,12 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend>
     public boolean checkWhetherItIsAFriend(String userId, String friendId) {
         LambdaQueryWrapper<Friend> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Friend::getFriendId,friendId).eq(Friend::getUserId,userId);
-        Long aLong = friendMapper.selectCount(wrapper);
-        if(aLong>0){
+        LambdaQueryWrapper<Friend> wrapper1 = new LambdaQueryWrapper<>();
+        wrapper1.eq(Friend::getFriendId,userId).eq(Friend::getUserId,friendId);
+        Long aLong1 = friendMapper.selectCount(wrapper);
+        Long aLong2 = friendMapper.selectCount(wrapper1);
+        Long sum = aLong1+aLong2;
+        if(sum>0){
             return true;
         }else {
             return false;

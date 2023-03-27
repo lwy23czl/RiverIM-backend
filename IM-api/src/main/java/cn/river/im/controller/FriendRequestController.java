@@ -5,14 +5,12 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.river.im.annotation.AuthCheck;
 import cn.river.im.dto.FeedbackDto;
-import cn.river.im.entity.Friend;
-import cn.river.im.entity.FriendRequest;
-import cn.river.im.entity.FriendRequestsFeedback;
-import cn.river.im.entity.User;
+import cn.river.im.entity.*;
 import cn.river.im.enums.ApiCode;
 import cn.river.im.exception.BusinessException;
 import cn.river.im.local.LocalUser;
 import cn.river.im.result.Result;
+import cn.river.im.service.ChatNumNewService;
 import cn.river.im.service.FriendRequestService;
 import cn.river.im.service.FriendRequestsFeedbackService;
 import cn.river.im.service.FriendService;
@@ -35,6 +33,7 @@ public class FriendRequestController {
     private final FriendRequestService friendRequestService;
     private final FriendRequestsFeedbackService feedbackService;
     private final FriendService friendService;
+    private final ChatNumNewService chatNumNewService;
     /**
      * 发送好友请求
      * @param friendRequest
@@ -94,6 +93,17 @@ public class FriendRequestController {
                 throw new BusinessException(ApiCode.FAIL.getCode(), "该用户已是您的好友");
             }else {
                 friendService.save(friend);
+                //插入好友表的同时在聊天记录数量表插入数据
+                ChatNumNew num1 = new ChatNumNew();
+                ChatNumNew num2 = new ChatNumNew();
+                num1.setNum(0);
+                num1.setFromId(Long.valueOf(friend.getFriendId()));
+                num1.setToId(Long.valueOf(friend.getUserId()));
+                num2.setNum(0);
+                num2.setFromId(Long.valueOf(friend.getUserId()));
+                num2.setToId(Long.valueOf(friend.getFriendId()));
+                chatNumNewService.save(num1);
+                chatNumNewService.save(num2);
             }
         }
         //无论同意还是拒绝都删除friendRequest表数据
@@ -123,7 +133,7 @@ public class FriendRequestController {
     @AuthCheck
     public Result<List<FriendRequestVo>> getList(){
         User user = LocalUser.getUser();
-        return Result.ok(friendRequestService.getFRList(user));
+        return Result.ok(friendRequestService.getFRList(user.getId()));
     }
 
 

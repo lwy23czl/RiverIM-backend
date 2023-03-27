@@ -8,6 +8,7 @@ import cn.river.im.entity.ChatRecord;
 import cn.river.im.entity.User;
 import cn.river.im.mapper.ChatRecordMapper;
 import cn.river.im.result.Result;
+import cn.river.im.service.ChatNumNewService;
 import cn.river.im.service.ChatRecordService;
 import cn.river.im.service.UserService;
 import cn.river.im.vo.ChatCardVo;
@@ -16,6 +17,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ public class ChatRecordServiceImpl extends ServiceImpl<ChatRecordMapper, ChatRec
 
     private final ChatRecordMapper chatRecordMapper;
     private final UserService userService;
+    private final ChatNumNewService chatNumNewService;
     /**
      * 插入一条聊天记录
      * 传入双方id,聊天内容
@@ -90,6 +93,8 @@ public class ChatRecordServiceImpl extends ServiceImpl<ChatRecordMapper, ChatRec
             ChatCardVo vo = new ChatCardVo();
             LambdaQueryWrapper<ChatRecord> wrapper1 = new LambdaQueryWrapper<>();
             if(uid.equals(chatRecord.getFromId())){
+                int chatNumItem = chatNumNewService.getChatNumItem(uid, chatRecord.getToId());
+                vo.setChatNumItem(chatNumItem);
                 wrapper1.eq(ChatRecord::getFromId,uid).eq(ChatRecord::getToId,chatRecord.getToId()).select(ChatRecord::getCreationTime,ChatRecord::getContent).orderByDesc(ChatRecord::getCreationTime).last("limit 1");
                 //获取聊天对象头像，昵称
                 User user = userService.getById(chatRecord.getToId());
@@ -97,6 +102,8 @@ public class ChatRecordServiceImpl extends ServiceImpl<ChatRecordMapper, ChatRec
                 vo.setObjectName(user.getNickName());
                 vo.setImgUrl(user.getHeadPortrait());
             }else {
+                int chatNumItem = chatNumNewService.getChatNumItem(uid, chatRecord.getFromId());
+                vo.setChatNumItem(chatNumItem);
                 wrapper1.eq(ChatRecord::getToId,uid).eq(ChatRecord::getFromId,chatRecord.getFromId()).select(ChatRecord::getCreationTime,ChatRecord::getContent).orderByDesc(ChatRecord::getCreationTime).last("limit 1");
                 //获取聊天对象头像，昵称
                 User user = userService.getById(chatRecord.getFromId());

@@ -124,7 +124,7 @@ public class WebSocketService {
         chatRecord.setToId(msgDto.getToId());
         chatRecord.setFromId(msgDto.getFromId());
         chatRecord.setContent(msgDto.getMsg());
-        chatRecordService.addSingleChatMsg(chatRecord);
+        boolean b = chatRecordService.addSingleChatMsg(chatRecord);
         //判断接收方是否在线，在线就发送
         if(webSocketMap.containsKey(msgDto.getToId())){
             //设置消息模板

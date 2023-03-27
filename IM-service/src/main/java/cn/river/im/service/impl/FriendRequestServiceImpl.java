@@ -11,6 +11,7 @@ import cn.river.im.vo.FriendRequestVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -46,10 +47,10 @@ public class FriendRequestServiceImpl extends ServiceImpl<FriendRequestMapper, F
     }
 
     @Override
-    public List<FriendRequestVo> getFRList(User user) {
+    public List<FriendRequestVo> getFRList(String uid) {
         //根据toId获取列表
         LambdaQueryWrapper<FriendRequest> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(FriendRequest::getToId,user.getId());
+        wrapper.eq(FriendRequest::getToId,uid);
         List<FriendRequest> requestList = this.baseMapper.selectList(wrapper);
         List<FriendRequestVo> vos=new ArrayList<>();
         for (FriendRequest friendRequest : requestList) {
